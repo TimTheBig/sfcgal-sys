@@ -22,7 +22,7 @@ fn main() {
     } else if cfg!(target_os = "macos") {
         env_var("HOMEBREW_PREFIX").unwrap_or("/opt/homebrew".to_owned())
     } else {
-        "/usr/include".to_owned()
+        "/usr".to_owned()
     };
 
     if let Some(link_paths) = link_paths_opt {
@@ -75,14 +75,14 @@ fn main() {
             .map(PathBuf::from)
             .collect(),
         None => {
-            let default_path = if cfg!(target_os = "macos") {
-                format!("{}/include", prefix)
+            // default_path
+            if cfg!(target_os = "macos") {
+                vec![PathBuf::from(format!("{}/include", prefix))]
             } else if cfg!(target_os = "windows") {
-                format!("{}\\include", prefix)
+                vec![PathBuf::from(format!("{}\\include", prefix))]
             } else {
-                "/usr/include".to_owned()
-            };
-            vec![PathBuf::from(default_path)]
+                vec![PathBuf::from("/usr/include"), PathBuf::from("/usr/local/include")]
+            }
         },
     };
 
