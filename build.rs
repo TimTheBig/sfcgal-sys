@@ -38,7 +38,14 @@ fn main() {
 
         cargo_metadata.extend(meta);
     } else if cfg!(target_os = "macos") {
-        println!("cargo:rustc-link-search=native=/opt/homebrew/lib");
+        println!("cargo:rustc-link-search=native={}/lib", env_var("HOMEBREW_PREFIX").unwrap_or("/opt/homebrew".to_string()));
+    } else if cfg!(target_os = "linux") {
+        println!("cargo:rustc-link-search=native=/usr/local/lib");
+    } else if cfg!(target_os = "windows") {
+        // Try MSYS2 MinGW64 path detection
+        let mingw_prefix = env_var("MSYS2_PATH").unwrap_or("C:\\msys64\\mingw64".to_string());
+
+        println!("cargo:rustc-link-search=native={}\\lib", mingw_prefix);
     }
 
     if let Some(link_libs) = link_libs_opt {
