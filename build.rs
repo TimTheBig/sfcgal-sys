@@ -37,6 +37,8 @@ fn main() {
             });
 
         cargo_metadata.extend(meta);
+    } else if cfg!(target_os = "macos") {
+        println!("cargo:rustc-link-search=native=/opt/homebrew/lib");
     }
 
     if let Some(link_libs) = link_libs_opt {
