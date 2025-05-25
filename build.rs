@@ -58,7 +58,16 @@ fn main() {
             .filter(|x| !x.is_empty())
             .map(PathBuf::from)
             .collect(),
-        None => vec![PathBuf::from("/usr/include")],
+        None => {
+            let default_path = if cfg!(target_os = "macos") {
+                "/opt/homebrew/include"
+            } else if cfg!(target_os = "windows") {
+                "C:\\msys64\\mingw64\\include"
+            } else {
+                "/usr/include"
+            };
+            vec![PathBuf::from(default_path)]
+        },
     };
 
     {
